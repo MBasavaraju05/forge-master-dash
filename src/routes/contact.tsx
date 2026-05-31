@@ -7,6 +7,7 @@ import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { fetchSetting, type ContactSettings } from "@/lib/cms";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 const FALLBACK: ContactSettings = {
   phone: "+91 98765 43210", whatsapp: "919876543210",
