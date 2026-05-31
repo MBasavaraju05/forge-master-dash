@@ -98,14 +98,14 @@ function AdminPage() {
       <section className="container mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h1 className="text-4xl font-display font-bold uppercase">Admin Dashboard</h1>
+            <h1 className="text-4xl font-display font-bold uppercase">{t("Admin Dashboard")}</h1>
             <p className="text-steel-500 text-sm mt-2">Signed in as {session.user.email}</p>
           </div>
-          <button onClick={signOut} className="text-sm font-bold uppercase tracking-widest border border-steel-200 px-4 py-2 hover:border-steel-900">Sign Out</button>
+          <button onClick={signOut} className="text-sm font-bold uppercase tracking-widest border border-steel-200 px-4 py-2 hover:border-steel-900">{t("Sign Out")}</button>
         </div>
 
         <div className="bg-steel-50 border border-steel-200 p-8 mb-8">
-          <h2 className="text-xl font-display font-bold uppercase mb-3">Welcome 👷</h2>
+          <h2 className="text-xl font-display font-bold uppercase mb-3">{t("Welcome")} 👷</h2>
           <p className="text-steel-600 text-sm leading-relaxed max-w-2xl">
             You're signed in as an admin. The full content management UI (gallery uploads, project CRUD, testimonials, settings)
             is wired into the database and will be added to this dashboard next. In the meantime, all public pages already
@@ -125,13 +125,13 @@ function AdminPage() {
             { label: "Inquiries", desc: "View contact form submissions" },
           ].map((c) => (
             <div key={c.label} className="border border-steel-200 p-6">
-              <h3 className="font-display font-bold uppercase text-sm mb-2">{c.label}</h3>
+              <h3 className="font-display font-bold uppercase text-sm mb-2">{t(c.label)}</h3>
               <p className="text-xs text-steel-500">{c.desc}</p>
             </div>
           ))}
         </div>
 
-        <Link to="/" className="inline-block mt-12 text-sm font-bold uppercase tracking-widest hover:text-spark">← Back to site</Link>
+        <Link to="/" className="inline-block mt-12 text-sm font-bold uppercase tracking-widest hover:text-spark">{t("← Back to site")}</Link>
       </section>
     </SiteLayout>
   );
