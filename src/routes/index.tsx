@@ -123,8 +123,8 @@ function HomePage() {
                 <div className="size-12 bg-spark/10 group-hover:bg-spark grid place-items-center mb-6 transition-colors">
                   <Icon size={22} className="text-steel-900" />
                 </div>
-                <h3 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{s.name}</h3>
-                <p className="text-steel-500 group-hover:text-steel-400 text-sm mb-6">{s.description}</p>
+                <h3 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{t(s.name)}</h3>
+                <p className="text-steel-500 group-hover:text-steel-400 text-sm mb-6">{t(s.description)}</p>
                 <div className="h-1 w-0 group-hover:w-full bg-spark transition-all duration-500" />
               </Reveal>
             );
@@ -132,7 +132,7 @@ function HomePage() {
         </div>
         <Reveal className="mt-10 text-center">
           <Link to="/services" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:text-spark transition-colors">
-            View all services <ArrowRight size={16} />
+            {t("View all services")} <ArrowRight size={16} />
           </Link>
         </Reveal>
       </section>
