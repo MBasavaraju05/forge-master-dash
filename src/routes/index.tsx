@@ -141,15 +141,15 @@ function HomePage() {
       <section className="bg-steel-50 border-y border-steel-200 py-24">
         <div className="container mx-auto px-6">
           <Reveal className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">Why Choose Us</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("Why Choose Us")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </Reveal>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY.map((w, i) => (
               <Reveal key={w.title} delay={i * 0.05} className="bg-white border border-steel-200 p-8 hover:border-spark transition-colors">
                 <CheckCircle2 className="text-spark mb-4" size={24} />
-                <h3 className="text-lg font-display font-bold uppercase mb-2">{w.title}</h3>
-                <p className="text-steel-500 text-sm">{w.body}</p>
+                <h3 className="text-lg font-display font-bold uppercase mb-2">{t(w.title)}</h3>
+                <p className="text-steel-500 text-sm">{t(w.body)}</p>
               </Reveal>
             ))}
           </div>
