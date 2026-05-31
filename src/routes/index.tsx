@@ -100,7 +100,7 @@ function HomePage() {
               <div className="text-4xl md:text-5xl font-display font-bold text-steel-900">
                 <Counter to={s.v} />
               </div>
-              <div className="text-xs uppercase font-bold text-steel-900/60 tracking-wider mt-1">{s.l}</div>
+              <div className="text-xs uppercase font-bold text-steel-900/60 tracking-wider mt-1">{t(s.l)}</div>
             </div>
           ))}
         </div>
