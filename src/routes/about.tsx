@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { fetchSetting, type AboutSettings } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 
 const FALLBACK: AboutSettings = {
   intro: "Parameshwara Engineering Works has been a trusted partner for industrial welding and fabrication since 1998.",
