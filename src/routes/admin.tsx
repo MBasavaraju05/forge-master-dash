@@ -81,16 +81,16 @@ function AdminPage() {
     return (
       <SiteLayout>
         <section className="container mx-auto px-6 py-20 max-w-md text-center">
-          <h1 className="text-3xl font-display font-bold uppercase mb-4">Access Denied</h1>
-          <p className="text-steel-500 mb-6">This account is not an admin.</p>
-          <button onClick={signOut} className="bg-steel-900 text-white px-6 py-3 font-bold uppercase text-sm tracking-widest">Sign Out</button>
+          <h1 className="text-3xl font-display font-bold uppercase mb-4">{t("Access Denied")}</h1>
+          <p className="text-steel-500 mb-6">{t("This account is not an admin.")}</p>
+          <button onClick={signOut} className="bg-steel-900 text-white px-6 py-3 font-bold uppercase text-sm tracking-widest">{t("Sign Out")}</button>
         </section>
       </SiteLayout>
     );
   }
 
   if (isAdmin === null) {
-    return <SiteLayout><div className="py-32 text-center text-steel-500">Loading…</div></SiteLayout>;
+    return <SiteLayout><div className="py-32 text-center text-steel-500">{t("Loading…")}</div></SiteLayout>;
   }
 
   return (
