@@ -19,18 +19,19 @@ export const Route = createFileRoute("/projects")({
 });
 
 function ProjectsPage() {
+  const { t } = useI18n();
   const { data: projects = [] } = useQuery({ queryKey: ["projects"], queryFn: fetchProjects });
   return (
     <SiteLayout>
       <section className="bg-steel-900 text-white py-24">
         <div className="container mx-auto px-6">
-          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">Completed Projects</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">{t("Completed Projects")}</h1>
           <div className="w-20 h-2 bg-spark" />
         </div>
       </section>
       <section className="container mx-auto px-6 py-20">
         {projects.length === 0 ? (
-          <p className="text-center text-steel-500 py-24">No projects yet. Add some from the admin dashboard.</p>
+          <p className="text-center text-steel-500 py-24">{t("No projects yet. Add some from the admin dashboard.")}</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((p, i) => (
@@ -41,11 +42,11 @@ function ProjectsPage() {
                   </div>
                 )}
                 <div className="p-6">
-                  <span className="text-xs font-bold uppercase tracking-widest text-spark">{p.category}</span>
-                  <h2 className="text-xl font-display font-bold uppercase mt-2 mb-2">{p.name}</h2>
-                  {p.description && <p className="text-steel-500 text-sm mb-4">{p.description}</p>}
+                  <span className="text-xs font-bold uppercase tracking-widest text-spark">{p.category ? t(p.category) : ""}</span>
+                  <h2 className="text-xl font-display font-bold uppercase mt-2 mb-2">{t(p.name)}</h2>
+                  {p.description && <p className="text-steel-500 text-sm mb-4">{t(p.description)}</p>}
                   {p.completion_date && (
-                    <p className="text-xs text-steel-400">Completed {new Date(p.completion_date).toLocaleDateString()}</p>
+                    <p className="text-xs text-steel-400">{t("Completed")} {new Date(p.completion_date).toLocaleDateString()}</p>
                   )}
                 </div>
               </Reveal>
