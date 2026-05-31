@@ -16,6 +16,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
+  const { t } = useI18n();
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
