@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { fetchGallery, GALLERY_CATEGORIES, type GalleryImage } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
