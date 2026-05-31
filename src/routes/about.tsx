@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { fetchSetting, type AboutSettings } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 
 const FALLBACK: AboutSettings = {
   intro: "Parameshwara Engineering Works has been a trusted partner for industrial welding and fabrication since 1998.",
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { t } = useI18n();
   const { data: about = FALLBACK } = useQuery({ queryKey: ["settings", "about"], queryFn: () => fetchSetting("about", FALLBACK) });
   const blocks = [
     { label: "History", body: about.history },
@@ -37,17 +39,17 @@ function AboutPage() {
     <SiteLayout>
       <section className="bg-steel-900 text-white py-24">
         <div className="container mx-auto px-6">
-          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">About Us</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">{t("About Us")}</h1>
           <div className="w-20 h-2 bg-spark mb-8" />
-          <p className="text-steel-400 text-xl max-w-3xl">{about.intro}</p>
+          <p className="text-steel-400 text-xl max-w-3xl">{t(about.intro)}</p>
         </div>
       </section>
       <section className="container mx-auto px-6 py-20">
         <div className="space-y-12 max-w-4xl">
           {blocks.map((b, i) => (
             <Reveal key={b.label} delay={i * 0.05} className="grid md:grid-cols-[180px_1fr] gap-6 border-b border-steel-200 pb-12">
-              <div className="text-xs font-bold uppercase tracking-widest text-spark">{b.label}</div>
-              <p className="text-lg text-steel-600 leading-relaxed">{b.body}</p>
+              <div className="text-xs font-bold uppercase tracking-widest text-spark">{t(b.label)}</div>
+              <p className="text-lg text-steel-600 leading-relaxed">{t(b.body)}</p>
             </Reveal>
           ))}
         </div>

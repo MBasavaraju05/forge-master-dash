@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
+  const { t } = useI18n();
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -58,17 +60,17 @@ function AdminPage() {
     return (
       <SiteLayout>
         <section className="container mx-auto px-6 py-20 max-w-md">
-          <h1 className="text-4xl font-display font-bold uppercase mb-2">Admin Portal</h1>
-          <p className="text-steel-500 mb-8 text-sm">{mode === "signin" ? "Sign in to manage the website." : "Create your admin account (the first signup is automatically promoted to admin)."}</p>
+          <h1 className="text-4xl font-display font-bold uppercase mb-2">{t("Admin Portal")}</h1>
+          <p className="text-steel-500 mb-8 text-sm">{mode === "signin" ? t("Sign in to manage the website.") : t("Create your admin account (the first signup is automatically promoted to admin).")}</p>
           <form onSubmit={handleAuth} className="space-y-4">
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full bg-white border border-steel-200 px-4 py-3" />
+            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("Email")} className="w-full bg-white border border-steel-200 px-4 py-3" />
             <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (min 6 chars)" minLength={6} className="w-full bg-white border border-steel-200 px-4 py-3" />
             <button disabled={busy} className="w-full bg-steel-900 text-white py-4 font-bold uppercase tracking-widest hover:bg-spark hover:text-spark-foreground transition-colors disabled:opacity-50">
-              {busy ? "…" : mode === "signin" ? "Sign In" : "Create Account"}
+              {busy ? "…" : mode === "signin" ? t("Sign In") : t("Create Account")}
             </button>
           </form>
           <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="mt-4 text-sm text-steel-500 hover:text-spark">
-            {mode === "signin" ? "Need to create an admin account?" : "Already have an account? Sign in"}
+            {mode === "signin" ? t("Need to create an admin account?") : t("Already have an account? Sign in")}
           </button>
         </section>
       </SiteLayout>
@@ -79,16 +81,16 @@ function AdminPage() {
     return (
       <SiteLayout>
         <section className="container mx-auto px-6 py-20 max-w-md text-center">
-          <h1 className="text-3xl font-display font-bold uppercase mb-4">Access Denied</h1>
-          <p className="text-steel-500 mb-6">This account is not an admin.</p>
-          <button onClick={signOut} className="bg-steel-900 text-white px-6 py-3 font-bold uppercase text-sm tracking-widest">Sign Out</button>
+          <h1 className="text-3xl font-display font-bold uppercase mb-4">{t("Access Denied")}</h1>
+          <p className="text-steel-500 mb-6">{t("This account is not an admin.")}</p>
+          <button onClick={signOut} className="bg-steel-900 text-white px-6 py-3 font-bold uppercase text-sm tracking-widest">{t("Sign Out")}</button>
         </section>
       </SiteLayout>
     );
   }
 
   if (isAdmin === null) {
-    return <SiteLayout><div className="py-32 text-center text-steel-500">Loading…</div></SiteLayout>;
+    return <SiteLayout><div className="py-32 text-center text-steel-500">{t("Loading…")}</div></SiteLayout>;
   }
 
   return (
@@ -96,14 +98,14 @@ function AdminPage() {
       <section className="container mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h1 className="text-4xl font-display font-bold uppercase">Admin Dashboard</h1>
+            <h1 className="text-4xl font-display font-bold uppercase">{t("Admin Dashboard")}</h1>
             <p className="text-steel-500 text-sm mt-2">Signed in as {session.user.email}</p>
           </div>
-          <button onClick={signOut} className="text-sm font-bold uppercase tracking-widest border border-steel-200 px-4 py-2 hover:border-steel-900">Sign Out</button>
+          <button onClick={signOut} className="text-sm font-bold uppercase tracking-widest border border-steel-200 px-4 py-2 hover:border-steel-900">{t("Sign Out")}</button>
         </div>
 
         <div className="bg-steel-50 border border-steel-200 p-8 mb-8">
-          <h2 className="text-xl font-display font-bold uppercase mb-3">Welcome 👷</h2>
+          <h2 className="text-xl font-display font-bold uppercase mb-3">{t("Welcome")} 👷</h2>
           <p className="text-steel-600 text-sm leading-relaxed max-w-2xl">
             You're signed in as an admin. The full content management UI (gallery uploads, project CRUD, testimonials, settings)
             is wired into the database and will be added to this dashboard next. In the meantime, all public pages already
@@ -123,13 +125,13 @@ function AdminPage() {
             { label: "Inquiries", desc: "View contact form submissions" },
           ].map((c) => (
             <div key={c.label} className="border border-steel-200 p-6">
-              <h3 className="font-display font-bold uppercase text-sm mb-2">{c.label}</h3>
+              <h3 className="font-display font-bold uppercase text-sm mb-2">{t(c.label)}</h3>
               <p className="text-xs text-steel-500">{c.desc}</p>
             </div>
           ))}
         </div>
 
-        <Link to="/" className="inline-block mt-12 text-sm font-bold uppercase tracking-widest hover:text-spark">← Back to site</Link>
+        <Link to="/" className="inline-block mt-12 text-sm font-bold uppercase tracking-widest hover:text-spark">{t("← Back to site")}</Link>
       </section>
     </SiteLayout>
   );

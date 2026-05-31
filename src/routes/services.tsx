@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { fetchServices } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 import * as Icons from "lucide-react";
 
 export const Route = createFileRoute("/services")({
@@ -19,12 +20,13 @@ export const Route = createFileRoute("/services")({
 });
 
 function ServicesPage() {
+  const { t } = useI18n();
   const { data: services = [] } = useQuery({ queryKey: ["services"], queryFn: fetchServices });
   return (
     <SiteLayout>
       <section className="bg-steel-900 text-white py-24">
         <div className="container mx-auto px-6">
-          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">Our Services</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">{t("Our Services")}</h1>
           <div className="w-20 h-2 bg-spark" />
         </div>
       </section>
@@ -37,8 +39,8 @@ function ServicesPage() {
                 <div className="size-12 bg-spark/10 group-hover:bg-spark grid place-items-center mb-6 transition-colors">
                   <Icon size={22} className="text-steel-900" />
                 </div>
-                <h2 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{s.name}</h2>
-                <p className="text-steel-500 group-hover:text-steel-400 text-sm">{s.description}</p>
+                <h2 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{t(s.name)}</h2>
+                <p className="text-steel-500 group-hover:text-steel-400 text-sm">{t(s.description)}</p>
               </Reveal>
             );
           })}

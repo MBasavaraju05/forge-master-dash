@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { Counter } from "@/components/site/Counter";
 import { fetchServices, fetchSetting, fetchTestimonials, type HeroSettings, type StatsSettings } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 import heroImg from "@/assets/hero-welding.jpg";
 
 const HERO_FALLBACK: HeroSettings = {
@@ -42,6 +43,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { t } = useI18n();
   const { data: hero = HERO_FALLBACK } = useQuery({ queryKey: ["settings", "hero"], queryFn: () => fetchSetting("hero", HERO_FALLBACK) });
   const { data: stats = STATS_FALLBACK } = useQuery({ queryKey: ["settings", "stats"], queryFn: () => fetchSetting("stats", STATS_FALLBACK) });
   const { data: services = [] } = useQuery({ queryKey: ["services"], queryFn: fetchServices });
@@ -58,20 +60,20 @@ function HomePage() {
         <div className="container mx-auto px-6 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="max-w-4xl">
             <span className="inline-block px-3 py-1 bg-spark text-spark-foreground font-bold text-xs uppercase tracking-widest mb-6">
-              Established 1998
+              {t("Established 1998")}
             </span>
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-8 uppercase">
-              Precision <br /><span className="text-spark">Engineering.</span>
+              {t("Precision")} <br /><span className="text-spark">{t("Engineering.")}</span>
             </h1>
             <p className="text-steel-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed">
-              {hero.subheading}
+              {t(hero.subheading)}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/gallery" className="bg-spark text-spark-foreground px-8 py-4 font-bold uppercase tracking-wider text-base hover:scale-105 transition-transform inline-flex items-center gap-2">
-                View Our Work <ArrowRight size={18} />
+                {t("View Our Work")} <ArrowRight size={18} />
               </Link>
               <Link to="/contact" className="border-2 border-white/20 text-white px-8 py-4 font-bold uppercase tracking-wider text-base hover:bg-white/10 transition-colors">
-                Contact Us
+                {t("Contact Us")}
               </Link>
             </div>
           </motion.div>
@@ -98,7 +100,7 @@ function HomePage() {
               <div className="text-4xl md:text-5xl font-display font-bold text-steel-900">
                 <Counter to={s.v} />
               </div>
-              <div className="text-xs uppercase font-bold text-steel-900/60 tracking-wider mt-1">{s.l}</div>
+              <div className="text-xs uppercase font-bold text-steel-900/60 tracking-wider mt-1">{t(s.l)}</div>
             </div>
           ))}
         </div>
@@ -108,10 +110,10 @@ function HomePage() {
       <section className="py-24 px-6 container mx-auto">
         <Reveal className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-16">
           <div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">Core Capabilities</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("Core Capabilities")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </div>
-          <p className="text-steel-500 max-w-sm text-sm">Specialized engineering solutions for heavy industry and modern agriculture.</p>
+          <p className="text-steel-500 max-w-sm text-sm">{t("Specialized engineering solutions for heavy industry and modern agriculture.")}</p>
         </Reveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-steel-200 border border-steel-200">
           {services.slice(0, 9).map((s, i) => {
@@ -121,8 +123,8 @@ function HomePage() {
                 <div className="size-12 bg-spark/10 group-hover:bg-spark grid place-items-center mb-6 transition-colors">
                   <Icon size={22} className="text-steel-900" />
                 </div>
-                <h3 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{s.name}</h3>
-                <p className="text-steel-500 group-hover:text-steel-400 text-sm mb-6">{s.description}</p>
+                <h3 className="text-xl font-display font-bold uppercase mb-3 group-hover:text-white">{t(s.name)}</h3>
+                <p className="text-steel-500 group-hover:text-steel-400 text-sm mb-6">{t(s.description)}</p>
                 <div className="h-1 w-0 group-hover:w-full bg-spark transition-all duration-500" />
               </Reveal>
             );
@@ -130,7 +132,7 @@ function HomePage() {
         </div>
         <Reveal className="mt-10 text-center">
           <Link to="/services" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:text-spark transition-colors">
-            View all services <ArrowRight size={16} />
+            {t("View all services")} <ArrowRight size={16} />
           </Link>
         </Reveal>
       </section>
@@ -139,15 +141,15 @@ function HomePage() {
       <section className="bg-steel-50 border-y border-steel-200 py-24">
         <div className="container mx-auto px-6">
           <Reveal className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">Why Choose Us</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("Why Choose Us")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </Reveal>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY.map((w, i) => (
               <Reveal key={w.title} delay={i * 0.05} className="bg-white border border-steel-200 p-8 hover:border-spark transition-colors">
                 <CheckCircle2 className="text-spark mb-4" size={24} />
-                <h3 className="text-lg font-display font-bold uppercase mb-2">{w.title}</h3>
-                <p className="text-steel-500 text-sm">{w.body}</p>
+                <h3 className="text-lg font-display font-bold uppercase mb-2">{t(w.title)}</h3>
+                <p className="text-steel-500 text-sm">{t(w.body)}</p>
               </Reveal>
             ))}
           </div>
@@ -158,7 +160,7 @@ function HomePage() {
       {testimonials.length > 0 && (
         <section className="py-24 container mx-auto px-6">
           <Reveal className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">What Clients Say</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("What Clients Say")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </Reveal>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -182,13 +184,13 @@ function HomePage() {
         <div className="container mx-auto px-6 text-center">
           <Reveal>
             <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-6">
-              Ready to start your <span className="text-spark">next build?</span>
+              {t("Ready to start your")} <span className="text-spark">{t("next build?")}</span>
             </h2>
             <p className="text-steel-400 text-lg max-w-2xl mx-auto mb-10">
-              Whether it's a custom gate, structural fabrication, or urgent machinery repair — let's talk.
+              {t("Whether it's a custom gate, structural fabrication, or urgent machinery repair — let's talk.")}
             </p>
             <Link to="/contact" className="inline-flex items-center gap-2 bg-spark text-spark-foreground px-10 py-5 font-bold uppercase tracking-wider hover:scale-105 transition-transform">
-              Request a Quote <ArrowRight size={18} />
+              {t("Request a Quote")} <ArrowRight size={18} />
             </Link>
           </Reveal>
         </div>

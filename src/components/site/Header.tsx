@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 const links = [
   { to: "/", label: "Home" },
@@ -11,8 +12,24 @@ const links = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+function LangToggle() {
+  const { lang, setLang, t } = useI18n();
+  return (
+    <button
+      onClick={() => setLang(lang === "en" ? "te" : "en")}
+      className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest border border-steel-200 hover:border-steel-900 hover:bg-steel-900 hover:text-spark transition-colors"
+      aria-label={t("Telugu") + " / " + t("English")}
+      title={lang === "en" ? "తెలుగు" : "English"}
+    >
+      <Languages size={14} />
+      <span>{lang === "en" ? "తె" : "EN"}</span>
+    </button>
+  );
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-steel-900/5">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
@@ -21,7 +38,7 @@ export function Header() {
             <span className="text-spark group-hover:text-steel-900 font-display font-bold text-xl leading-none">P</span>
           </div>
           <span className="font-display font-bold tracking-tight text-base uppercase hidden sm:block">
-            Parameshwara
+            {t("Parameshwara")}
           </span>
         </Link>
 
@@ -34,17 +51,18 @@ export function Header() {
               className="hover:text-spark transition-colors"
               activeProps={{ className: "text-spark" }}
             >
-              {l.label}
+              {t(l.label)}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <LangToggle />
           <Link
             to="/contact"
             className="hidden md:inline-flex bg-steel-900 text-white px-5 py-2 text-xs font-bold uppercase tracking-widest hover:bg-spark hover:text-steel-900 transition-all"
           >
-            Get a Quote
+            {t("Get a Quote")}
           </Link>
           <button
             className="md:hidden p-2"
@@ -67,7 +85,7 @@ export function Header() {
                 className="text-sm font-medium uppercase tracking-wider py-2"
                 activeProps={{ className: "text-spark" }}
               >
-                {l.label}
+                {t(l.label)}
               </Link>
             ))}
             <Link
@@ -75,7 +93,7 @@ export function Header() {
               onClick={() => setOpen(false)}
               className="bg-steel-900 text-white px-5 py-3 text-xs font-bold uppercase tracking-widest text-center mt-2"
             >
-              Get a Quote
+              {t("Get a Quote")}
             </Link>
           </div>
         </div>
