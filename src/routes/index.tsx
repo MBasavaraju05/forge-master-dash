@@ -60,20 +60,20 @@ function HomePage() {
         <div className="container mx-auto px-6 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="max-w-4xl">
             <span className="inline-block px-3 py-1 bg-spark text-spark-foreground font-bold text-xs uppercase tracking-widest mb-6">
-              Established 1998
+              {t("Established 1998")}
             </span>
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-8 uppercase">
-              Precision <br /><span className="text-spark">Engineering.</span>
+              {t("Precision")} <br /><span className="text-spark">{t("Engineering.")}</span>
             </h1>
             <p className="text-steel-400 text-lg md:text-xl max-w-xl mb-10 leading-relaxed">
-              {hero.subheading}
+              {t(hero.subheading)}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/gallery" className="bg-spark text-spark-foreground px-8 py-4 font-bold uppercase tracking-wider text-base hover:scale-105 transition-transform inline-flex items-center gap-2">
-                View Our Work <ArrowRight size={18} />
+                {t("View Our Work")} <ArrowRight size={18} />
               </Link>
               <Link to="/contact" className="border-2 border-white/20 text-white px-8 py-4 font-bold uppercase tracking-wider text-base hover:bg-white/10 transition-colors">
-                Contact Us
+                {t("Contact Us")}
               </Link>
             </div>
           </motion.div>
