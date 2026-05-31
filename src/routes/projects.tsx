@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { fetchProjects } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
