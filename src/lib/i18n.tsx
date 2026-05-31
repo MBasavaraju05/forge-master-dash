@@ -135,7 +135,7 @@ const TE: Record<string, string> = {
   "Workshop Highlights": "వర్క్‌షాప్ ముఖ్యాంశాలు",
   "Welding & Fabrication": "వెల్డింగ్ & ఫాబ్రికేషన్",
   "Steel Structure Manufacturing": "స్టీల్ స్ట్రక్చర్ తయారీ",
-  "Agricultural Machinery Repair": "వ్యవసాయ యంత్రాల మరమ్మత్తు",
+
   "Harvest Machine Maintenance": "హార్వెస్ట్ మెషిన్ నిర్వహణ",
   "Sunflower Machine Maintenance": "సన్‌ఫ్లవర్ మెషిన్ నిర్వహణ",
   "Custom Engineering Solutions": "కస్టమ్ ఇంజినీరింగ్ పరిష్కారాలు",
