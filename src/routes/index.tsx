@@ -43,6 +43,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { t } = useI18n();
   const { data: hero = HERO_FALLBACK } = useQuery({ queryKey: ["settings", "hero"], queryFn: () => fetchSetting("hero", HERO_FALLBACK) });
   const { data: stats = STATS_FALLBACK } = useQuery({ queryKey: ["settings", "stats"], queryFn: () => fetchSetting("stats", STATS_FALLBACK) });
   const { data: services = [] } = useQuery({ queryKey: ["services"], queryFn: fetchServices });
