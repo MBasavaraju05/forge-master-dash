@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function Counter({ to, suffix = "+", duration = 1600 }: { to: number; suffix?: string; duration?: number }) {
+export function Counter({ to, suffix = "+", duration = 2000 }: { to: number; suffix?: string; duration?: number }) {
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
@@ -14,7 +14,7 @@ export function Counter({ to, suffix = "+", duration = 1600 }: { to: number; suf
           const start = performance.now();
           const tick = (t: number) => {
             const p = Math.min(1, (t - start) / duration);
-            const eased = 1 - Math.pow(1 - p, 3);
+            const eased = 1 - Math.pow(1 - p, 4);
             setVal(Math.round(to * eased));
             if (p < 1) requestAnimationFrame(tick);
           };
@@ -26,5 +26,5 @@ export function Counter({ to, suffix = "+", duration = 1600 }: { to: number; suf
     return () => obs.disconnect();
   }, [to, duration]);
 
-  return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
+  return <span ref={ref} className="tabular-nums">{val.toLocaleString()}{suffix}</span>;
 }

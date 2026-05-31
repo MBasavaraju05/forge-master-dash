@@ -15,6 +15,7 @@ export type GalleryImage = {
   description: string | null;
   category: string;
   image_url: string;
+  media_type: "image" | "video";
   storage_path: string | null;
   created_at: string;
 };
