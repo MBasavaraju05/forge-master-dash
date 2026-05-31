@@ -60,17 +60,17 @@ function AdminPage() {
     return (
       <SiteLayout>
         <section className="container mx-auto px-6 py-20 max-w-md">
-          <h1 className="text-4xl font-display font-bold uppercase mb-2">Admin Portal</h1>
-          <p className="text-steel-500 mb-8 text-sm">{mode === "signin" ? "Sign in to manage the website." : "Create your admin account (the first signup is automatically promoted to admin)."}</p>
+          <h1 className="text-4xl font-display font-bold uppercase mb-2">{t("Admin Portal")}</h1>
+          <p className="text-steel-500 mb-8 text-sm">{mode === "signin" ? t("Sign in to manage the website.") : t("Create your admin account (the first signup is automatically promoted to admin).")}</p>
           <form onSubmit={handleAuth} className="space-y-4">
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full bg-white border border-steel-200 px-4 py-3" />
+            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("Email")} className="w-full bg-white border border-steel-200 px-4 py-3" />
             <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (min 6 chars)" minLength={6} className="w-full bg-white border border-steel-200 px-4 py-3" />
             <button disabled={busy} className="w-full bg-steel-900 text-white py-4 font-bold uppercase tracking-widest hover:bg-spark hover:text-spark-foreground transition-colors disabled:opacity-50">
-              {busy ? "…" : mode === "signin" ? "Sign In" : "Create Account"}
+              {busy ? "…" : mode === "signin" ? t("Sign In") : t("Create Account")}
             </button>
           </form>
           <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="mt-4 text-sm text-steel-500 hover:text-spark">
-            {mode === "signin" ? "Need to create an admin account?" : "Already have an account? Sign in"}
+            {mode === "signin" ? t("Need to create an admin account?") : t("Already have an account? Sign in")}
           </button>
         </section>
       </SiteLayout>
