@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { fetchServices } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 import * as Icons from "lucide-react";
 
 export const Route = createFileRoute("/services")({
