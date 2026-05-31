@@ -160,7 +160,7 @@ function HomePage() {
       {testimonials.length > 0 && (
         <section className="py-24 container mx-auto px-6">
           <Reveal className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">What Clients Say</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("What Clients Say")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </Reveal>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
