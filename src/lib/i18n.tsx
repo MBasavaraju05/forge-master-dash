@@ -94,7 +94,6 @@ const TE: Record<string, string> = {
   "Workshop": "వర్క్‌షాప్",
   "Send a Message": "సందేశం పంపండి",
   "Name *": "పేరు *",
-  "Phone": "ఫోన్",
   "How can we help? *": "మేము ఎలా సహాయపడగలము? *",
   "Sending…": "పంపుతోంది…",
   "Send Message": "సందేశం పంపండి",
