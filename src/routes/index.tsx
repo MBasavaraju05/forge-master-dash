@@ -110,10 +110,10 @@ function HomePage() {
       <section className="py-24 px-6 container mx-auto">
         <Reveal className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-16">
           <div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">Core Capabilities</h2>
+            <h2 className="text-4xl md:text-5xl font-display font-bold uppercase mb-4">{t("Core Capabilities")}</h2>
             <div className="w-20 h-2 bg-spark" />
           </div>
-          <p className="text-steel-500 max-w-sm text-sm">Specialized engineering solutions for heavy industry and modern agriculture.</p>
+          <p className="text-steel-500 max-w-sm text-sm">{t("Specialized engineering solutions for heavy industry and modern agriculture.")}</p>
         </Reveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-steel-200 border border-steel-200">
           {services.slice(0, 9).map((s, i) => {
