@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { Counter } from "@/components/site/Counter";
 import { fetchServices, fetchSetting, fetchTestimonials, type HeroSettings, type StatsSettings } from "@/lib/cms";
+import { useI18n } from "@/lib/i18n";
 import heroImg from "@/assets/hero-welding.jpg";
 
 const HERO_FALLBACK: HeroSettings = {
