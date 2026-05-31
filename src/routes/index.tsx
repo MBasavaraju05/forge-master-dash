@@ -184,13 +184,13 @@ function HomePage() {
         <div className="container mx-auto px-6 text-center">
           <Reveal>
             <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-6">
-              Ready to start your <span className="text-spark">next build?</span>
+              {t("Ready to start your")} <span className="text-spark">{t("next build?")}</span>
             </h2>
             <p className="text-steel-400 text-lg max-w-2xl mx-auto mb-10">
-              Whether it's a custom gate, structural fabrication, or urgent machinery repair — let's talk.
+              {t("Whether it's a custom gate, structural fabrication, or urgent machinery repair — let's talk.")}
             </p>
             <Link to="/contact" className="inline-flex items-center gap-2 bg-spark text-spark-foreground px-10 py-5 font-bold uppercase tracking-wider hover:scale-105 transition-transform">
-              Request a Quote <ArrowRight size={18} />
+              {t("Request a Quote")} <ArrowRight size={18} />
             </Link>
           </Reveal>
         </div>
