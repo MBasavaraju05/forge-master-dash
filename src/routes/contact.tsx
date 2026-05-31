@@ -3,17 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { Phone, Mail, MapPin, MessageCircle, Send } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { Reveal } from "@/components/site/Reveal";
 import { fetchSetting, type ContactSettings } from "@/lib/cms";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 
 const FALLBACK: ContactSettings = {
-  phone: "+91 98765 43210", whatsapp: "919876543210",
-  email: "info@parameshwaraworks.com",
-  address: "Industrial Area, Phase II, Hubli, Karnataka, India",
-  maps_url: "https://www.google.com/maps?q=Hubli,Karnataka",
+  phone: "+91 7416889997", whatsapp: "917416889997",
+  email: "matambasavaraju90@gmail.com",
+  address: "Near Krishnaveni ITI, Anasuyamma Colony, Undavelly Village, Alampur Taluka, Telangana 509153",
+  maps_url: "https://www.google.com/maps/place/Parameshwara+Engineering+Works+Undavelly,+14-34,+Undavelly,+D.Burdipad,+Telangana+509153/data=!4m2!3m1!1s0x3bb5e587404cfebf:0xadaae89eb2961ea4",
 };
 
 const schema = z.object({
@@ -62,56 +64,85 @@ function ContactPage() {
 
   return (
     <SiteLayout>
-      <section className="bg-steel-900 text-white py-24">
-        <div className="container mx-auto px-6">
-          <h1 className="font-display text-5xl md:text-7xl font-bold uppercase mb-4">{t("Contact")}</h1>
-          <div className="w-20 h-2 bg-spark" />
+      <section className="bg-steel-900 py-32 relative overflow-hidden">
+        <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-spark/10 rounded-full blur-[120px]" />
+        <div className="container mx-auto px-6 relative z-10">
+          <Reveal>
+            <span className="text-spark text-xs font-bold uppercase tracking-widest mb-3 block">Get In Touch</span>
+            <h1 className="font-display text-6xl md:text-8xl font-bold text-white mb-4">{t("Contact")}</h1>
+            <div className="w-24 h-1.5 bg-gradient-to-r from-spark to-orange-500 rounded-full" />
+          </Reveal>
         </div>
       </section>
-      <section className="container mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16">
-        <div>
-          <h2 className="text-2xl font-display font-bold uppercase mb-8">{t("Reach Out")}</h2>
-          <div className="space-y-6">
-            <a href={`tel:${c.phone}`} className="flex items-start gap-4 group">
-              <div className="size-10 bg-steel-900 text-spark grid place-items-center shrink-0"><Phone size={18} /></div>
-              <div>
-                <div className="text-xs uppercase tracking-widest text-steel-500 mb-1">{t("Phone")}</div>
-                <div className="font-bold group-hover:text-spark transition-colors">{c.phone}</div>
-              </div>
-            </a>
-            <a href={`https://wa.me/${c.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group">
-              <div className="size-10 bg-steel-900 text-spark grid place-items-center shrink-0"><MessageCircle size={18} /></div>
-              <div>
-                <div className="text-xs uppercase tracking-widest text-steel-500 mb-1">{t("WhatsApp")}</div>
-                <div className="font-bold group-hover:text-spark transition-colors">{c.whatsapp}</div>
-              </div>
-            </a>
-            <a href={`mailto:${c.email}`} className="flex items-start gap-4 group">
-              <div className="size-10 bg-steel-900 text-spark grid place-items-center shrink-0"><Mail size={18} /></div>
-              <div>
-                <div className="text-xs uppercase tracking-widest text-steel-500 mb-1">{t("Email")}</div>
-                <div className="font-bold group-hover:text-spark transition-colors">{c.email}</div>
-              </div>
-            </a>
-            <a href={c.maps_url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group">
-              <div className="size-10 bg-steel-900 text-spark grid place-items-center shrink-0"><MapPin size={18} /></div>
-              <div>
-                <div className="text-xs uppercase tracking-widest text-steel-500 mb-1">{t("Workshop")}</div>
-                <div className="font-bold group-hover:text-spark transition-colors">{c.address}</div>
-              </div>
-            </a>
+
+      <section className="container mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12">
+        <Reveal direction="left">
+          <h2 className="text-2xl font-display font-bold text-steel-900 mb-8">{t("Reach Out")}</h2>
+          <div className="space-y-4">
+            {[
+              { href: `tel:${c.phone}`, icon: Phone, label: t("Phone"), value: c.phone },
+              { href: `https://wa.me/${c.whatsapp.replace(/\D/g, "")}`, icon: MessageCircle, label: t("WhatsApp"), value: c.whatsapp },
+              { href: `mailto:${c.email}`, icon: Mail, label: t("Email"), value: c.email },
+              { href: c.maps_url, icon: MapPin, label: t("Workshop"), value: c.address },
+            ].map((item) => (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                whileHover={{ x: 4, scale: 1.01 }}
+                className="flex items-start gap-4 card-3d p-5 group"
+              >
+                <div className="size-11 bg-spark/10 rounded-xl grid place-items-center shrink-0 group-hover:bg-gradient-to-br group-hover:from-spark group-hover:to-orange-500 transition-all duration-500">
+                  <item.icon size={18} className="text-spark group-hover:text-white transition-colors duration-500" />
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-steel-500 mb-1">{item.label}</div>
+                  <div className="font-bold text-steel-900">{item.value}</div>
+                </div>
+              </motion.a>
+            ))}
           </div>
-        </div>
-        <form onSubmit={submit} className="bg-steel-50 border border-steel-200 p-8 space-y-4">
-          <h2 className="text-2xl font-display font-bold uppercase mb-6">{t("Send a Message")}</h2>
-          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t("Name *")} className="w-full bg-white border border-steel-200 px-4 py-3" />
-          <input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t("Email")} type="email" className="w-full bg-white border border-steel-200 px-4 py-3" />
-          <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder={t("Phone")} className="w-full bg-white border border-steel-200 px-4 py-3" />
-          <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t("How can we help? *")} rows={5} className="w-full bg-white border border-steel-200 px-4 py-3" />
-          <button disabled={loading} className="w-full bg-steel-900 text-white py-4 font-bold uppercase tracking-widest hover:bg-spark hover:text-spark-foreground transition-colors disabled:opacity-50">
-            {loading ? t("Sending…") : t("Send Message")}
-          </button>
-        </form>
+        </Reveal>
+
+        <Reveal direction="right">
+          <form onSubmit={submit} className="card-3d p-8 space-y-5">
+            <h2 className="text-2xl font-display font-bold text-steel-900 mb-2">{t("Send a Message")}</h2>
+            <div className="w-16 h-1 bg-gradient-to-r from-spark to-orange-500 rounded-full mb-6" />
+            {[
+              { key: "name", placeholder: t("Name *"), required: true, type: "text" },
+              { key: "email", placeholder: t("Email"), required: false, type: "email" },
+              { key: "phone", placeholder: t("Phone"), required: false, type: "text" },
+            ].map((field) => (
+              <input
+                key={field.key}
+                required={field.required}
+                type={field.type}
+                value={form[field.key as keyof typeof form]}
+                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                placeholder={field.placeholder}
+                className="w-full bg-steel-50 border border-steel-200 text-steel-900 placeholder:text-steel-400 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-spark/30 focus:border-spark transition-all"
+              />
+            ))}
+            <textarea
+              required
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              placeholder={t("How can we help? *")}
+              rows={5}
+              className="w-full bg-steel-50 border border-steel-200 text-steel-900 placeholder:text-steel-400 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-spark/30 focus:border-spark transition-all resize-none"
+            />
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-spark to-orange-500 text-white py-4 font-bold uppercase tracking-widest rounded-xl inline-flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-spark/20 transition-all"
+            >
+              <Send size={16} />
+              {loading ? t("Sending…") : t("Send Message")}
+            </motion.button>
+          </form>
+        </Reveal>
       </section>
     </SiteLayout>
   );
