@@ -8,6 +8,7 @@ import { fetchSetting, type AboutSettings } from "@/lib/cms";
 import { useI18n } from "@/lib/i18n";
 import sharannayaImg from "@/assets/sharanayyapic.png";
 import sureshImg from "@/assets/sureshpic.png";
+import rammayaImg from "@/assets/rammaya.jpeg";
 
 const FALLBACK: AboutSettings = {
   intro: "Parameshwara Engineering Works has been a trusted partner for industrial welding and fabrication since 1984.",
@@ -30,7 +31,7 @@ const TEAM_EN = [
     name: "Ramayya",
     role: "Senior Engineer & Trusted Veteran",
     phone: "9542313220",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+    image: rammayaImg,
     description: "A pillar of this workshop since day one. Ramayya has been with Parameshwara Engineering Works from the very beginning — over 40 years of dedicated service. His mastery over arc welding, steel fabrication, and heavy machinery repair is legendary. Farmers and factory owners alike trust him with their most critical equipment. Reliable, skilled, and irreplaceable.",
     icon: Shield,
   },
@@ -57,7 +58,7 @@ const TEAM_TE = [
     name: "రామయ్య",
     role: "సీనియర్ ఇంజినీర్ & విశ్వసనీయ అనుభవి",
     phone: "9542313220",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+    image: rammayaImg,
     description: "మొదటి రోజు నుండి ఈ వర్క్షాప్కు స్తంభం. రామయ్య పరమేశ్వర ఇంజినీరింగ్ వర్క్స్తో మొదటి నుండి ఉన్నారు — 40+ సంవత్సరాల అంకిత సేవ. ఆర్క్ వెల్డింగ్, స్టీల్ ఫాబ్రికేషన్ మరియు భారీ యంత్ర మరమ్మత్తులో ఆయన నైపుణ్యం అద్భుతం. రైతులు మరియు ఫ్యాక్టరీ యజమానులు తమ అత్యంత కీలకమైన పరికరాలను ఆయనకు అప్పగిస్తారు. నమ్మదగిన, నైపుణ్యం కలిగిన మరియు భర్తీ చేయలేని వ్యక్తి.",
     icon: Shield,
   },

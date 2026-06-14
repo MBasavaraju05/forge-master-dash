@@ -17,7 +17,19 @@ export type GalleryImage = {
   image_url: string;
   media_type: "image" | "video";
   storage_path: string | null;
+  project_id: string | null;
+  display_order: number;
   created_at: string;
+};
+
+export type GalleryProject = {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  media: GalleryImage[];
+  created_at: string;
+  updated_at: string;
 };
 
 export type Project = {
@@ -59,6 +71,41 @@ export async function fetchServices() {
 }
 
 export async function fetchGallery(category?: string) {
+  let q = supabase.from("gallery_projects").select("*, media:gallery_images(*)").order("created_at", { ascending: false });
+  if (category && category !== "all") q = q.eq("category", category);
+  const { data, error } = await q;
+  if (error) throw error;
+
+  const projects = (data ?? []) as any[];
+  const normalizedProjects = projects.map((p) => ({
+    ...p,
+    media: (p.media ?? []).sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0))
+  })) as GalleryProject[];
+
+  // Also include any existing gallery_images rows that do not yet belong to a project.
+  const orphanQuery = supabase
+    .from("gallery_images")
+    .select("*")
+    .is("project_id", null)
+    .order("created_at", { ascending: false });
+  if (category && category !== "all") orphanQuery.eq("category", category);
+  const { data: orphans, error: orphanError } = await orphanQuery;
+  if (orphanError) throw orphanError;
+
+  const orphanProjects = (orphans ?? []).map((image) => ({
+    id: `orphan-${image.id}`,
+    title: image.title || "Untitled",
+    description: image.description,
+    category: image.category,
+    created_at: image.created_at,
+    updated_at: image.created_at,
+    media: [image],
+  })) as GalleryProject[];
+
+  return [...normalizedProjects, ...orphanProjects];
+}
+
+export async function fetchGalleryImages(category?: string) {
   let q = supabase.from("gallery_images").select("*").order("created_at", { ascending: false });
   if (category && category !== "all") q = q.eq("category", category);
   const { data, error } = await q;

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Trash2, Image, Video, X, Plus, Loader2 } from "lucide-react";
+import { Upload, Trash2, Image, Video, X, Plus, Loader2, Play } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,56 +153,120 @@ function GalleryManager() {
   const [category, setCategory] = useState("welding");
   const [showUpload, setShowUpload] = useState(false);
 
-  const { data: items = [], isLoading } = useQuery({ queryKey: ["gallery", "all"], queryFn: () => fetchGallery("all") });
+  const { data: projects = [], isLoading } = useQuery({ queryKey: ["gallery", "all"], queryFn: () => fetchGallery("all") });
 
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault();
+    if (!title.trim()) { toast.error("Title is required"); return; }
     const files = fileRef.current?.files;
     if (!files || files.length === 0) { toast.error("Select at least one file"); return; }
 
     setUploading(true);
-    let uploaded = 0;
 
-    for (const file of Array.from(files)) {
-      const isVideo = file.type.startsWith("video/");
-      const isImage = file.type.startsWith("image/");
-      if (!isVideo && !isImage) { toast.error(`${file.name} is not supported`); continue; }
-
-      const ext = file.name.split(".").pop();
-      const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-
-      const { error: uploadErr } = await supabase.storage.from("site-media").upload(path, file);
-      if (uploadErr) { toast.error(`Upload failed: ${uploadErr.message}`); continue; }
-
-      const { data: urlData } = supabase.storage.from("site-media").getPublicUrl(path);
-
-      const { error: dbErr } = await supabase.from("gallery_images").insert({
-        title: title || file.name.replace(/\.[^.]+$/, ""),
-        description: description || null,
+    try {
+      // 1. Create gallery project
+      const { data: projectData, error: projectErr } = await supabase.from("gallery_projects").insert({
+        title: title.trim(),
+        description: description.trim() || null,
         category,
-        image_url: urlData.publicUrl,
-        storage_path: path,
-      });
-      if (dbErr) { toast.error(dbErr.message); continue; }
-      uploaded++;
-    }
+      }).select().single();
 
-    setUploading(false);
-    if (uploaded > 0) {
-      toast.success(`${uploaded} file(s) uploaded!`);
-      queryClient.invalidateQueries({ queryKey: ["gallery"] });
-      setTitle("");
-      setDescription("");
-      setShowUpload(false);
-      if (fileRef.current) fileRef.current.value = "";
+      if (projectErr || !projectData) {
+        toast.error("Failed to create project");
+        setUploading(false);
+        return;
+      }
+
+      let uploaded = 0;
+
+      // 2. Upload files and attach to project
+      for (let i = 0; i < Array.from(files).length; i++) {
+        const file = Array.from(files)[i];
+        const isVideo = file.type.startsWith("video/");
+        const isImage = file.type.startsWith("image/");
+        if (!isVideo && !isImage) {
+          toast.error(`${file.name} is not supported`);
+          continue;
+        }
+
+        const ext = file.name.split(".").pop();
+        const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+        const { error: uploadErr } = await supabase.storage.from("site-media").upload(path, file);
+        if (uploadErr) {
+          toast.error(`Upload failed: ${uploadErr.message}`);
+          continue;
+        }
+
+        const { data: urlData } = supabase.storage.from("site-media").getPublicUrl(path);
+        const media_type = isVideo ? "video" : "image";
+
+        const { error: dbErr } = await supabase.from("gallery_images").insert({
+          project_id: projectData.id,
+          title: null,
+          description: null,
+          category,
+          image_url: urlData.publicUrl,
+          storage_path: path,
+          media_type,
+          display_order: i,
+        });
+
+        if (dbErr) {
+          toast.error(dbErr.message);
+          continue;
+        }
+        uploaded++;
+      }
+
+      setUploading(false);
+      if (uploaded > 0) {
+        toast.success(`Project created with ${uploaded} file(s)!`);
+        queryClient.invalidateQueries({ queryKey: ["gallery"] });
+        setTitle("");
+        setDescription("");
+        setShowUpload(false);
+        if (fileRef.current) fileRef.current.value = "";
+      } else {
+        // Delete empty project if no files uploaded
+        await supabase.from("gallery_projects").delete().eq("id", projectData.id);
+      }
+    } catch (err) {
+      toast.error("Upload failed");
+      setUploading(false);
     }
   }
 
-  async function handleDelete(id: string, storagePath: string | null) {
-    if (!confirm("Delete this item?")) return;
-    if (storagePath) await supabase.storage.from("site-media").remove([storagePath]);
-    const { error } = await supabase.from("gallery_images").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+  async function handleDeleteProject(projectId: string, media: any[]) {
+    if (!confirm("Delete this entire project and all its media?")) return;
+    
+    // Delete storage files
+    for (const item of media) {
+      if (item.storage_path) {
+        await supabase.storage.from("site-media").remove([item.storage_path]);
+      }
+    }
+    
+    // Delete project (cascade deletes images)
+    const { error } = await supabase.from("gallery_projects").delete().eq("id", projectId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Project deleted");
+    queryClient.invalidateQueries({ queryKey: ["gallery"] });
+  }
+
+  async function handleDeleteMedia(mediaId: string, storagePath: string | null) {
+    if (!confirm("Delete this media item?")) return;
+    if (storagePath) {
+      await supabase.storage.from("site-media").remove([storagePath]);
+    }
+    const { error } = await supabase.from("gallery_images").delete().eq("id", mediaId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Deleted");
     queryClient.invalidateQueries({ queryKey: ["gallery"] });
   }
@@ -214,7 +278,7 @@ function GalleryManager() {
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowUpload(!showUpload)}
           className="inline-flex items-center gap-2 bg-gradient-to-r from-spark to-orange-500 text-white px-5 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-spark/20">
           {showUpload ? <X size={14} /> : <Plus size={14} />}
-          {showUpload ? "Close" : "Upload Media"}
+          {showUpload ? "Close" : "New Project"}
         </motion.button>
       </div>
 
@@ -224,8 +288,8 @@ function GalleryManager() {
             onSubmit={handleUpload} className="card-3d p-6 mb-8 overflow-hidden">
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-steel-700 mb-1.5">Title</label>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Steel Gate Project"
+                <label className="block text-sm font-medium text-steel-700 mb-1.5">Project Title *</label>
+                <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Steel Gate Project"
                   className="w-full bg-steel-50 border border-steel-200 text-steel-900 placeholder:text-steel-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-spark/30 focus:border-spark transition-all" />
               </div>
               <div>
@@ -241,21 +305,21 @@ function GalleryManager() {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-steel-700 mb-1.5">Description (optional)</label>
-              <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Brief description of this work…" rows={2}
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Brief description of this project…" rows={2}
                 className="w-full bg-steel-50 border border-steel-200 text-steel-900 placeholder:text-steel-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-spark/30 focus:border-spark transition-all resize-none" />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-steel-700 mb-1.5">Files (images & videos)</label>
-              <input ref={fileRef} type="file" multiple accept="image/*,video/*"
+              <label className="block text-sm font-medium text-steel-700 mb-1.5">Multiple Images & Videos *</label>
+              <input ref={fileRef} type="file" multiple required accept="image/*,video/*"
                 className="w-full bg-steel-50 border-2 border-dashed border-steel-300 text-steel-900 rounded-xl px-4 py-8 text-sm text-center cursor-pointer hover:border-spark transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-spark/10 file:text-spark" />
-              <p className="text-xs text-steel-400 mt-1.5">JPG, PNG, WebP, MP4, MOV, WebM. Multiple files allowed.</p>
+              <p className="text-xs text-steel-400 mt-1.5">JPG, PNG, WebP, MP4, MOV, WebM. All files will be grouped under this project title.</p>
             </div>
 
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={uploading} type="submit"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-spark to-orange-500 text-white px-6 py-3 font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-spark/20 disabled:opacity-50 text-sm">
               {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-              {uploading ? "Uploading…" : "Upload Files"}
+              {uploading ? "Creating project…" : "Create Project"}
             </motion.button>
           </motion.form>
         )}
@@ -263,38 +327,53 @@ function GalleryManager() {
 
       {isLoading ? (
         <div className="py-16 text-center text-steel-500">Loading gallery…</div>
-      ) : items.length === 0 ? (
+      ) : projects.length === 0 ? (
         <div className="card-3d p-12 text-center">
           <Image size={48} className="text-steel-300 mx-auto mb-4" />
-          <p className="text-steel-500">No media uploaded yet. Click "Upload Media" to get started.</p>
+          <p className="text-steel-500">No projects created yet. Click "New Project" to get started.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {items.map((item) => {
-            const isVideo = !!item.image_url.match(/\.(mp4|mov|webm|avi)$/i);
-            return (
-              <motion.div key={item.id} whileHover={{ y: -4, scale: 1.02 }} className="card-3d overflow-hidden group relative">
-                {isVideo ? (
-                  <video src={item.image_url} className="w-full aspect-square object-cover" muted preload="metadata" />
-                ) : (
-                  <img src={item.image_url} alt={item.title ?? ""} className="w-full aspect-square object-cover" loading="lazy" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-steel-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      {item.title && <p className="text-white text-xs font-bold truncate">{item.title}</p>}
-                      <p className="text-white/60 text-[10px]">{item.category}</p>
-                    </div>
-                    <motion.button whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                      onClick={() => handleDelete(item.id, item.storage_path)}
-                      className="size-8 bg-red-500/90 rounded-lg grid place-items-center text-white hover:bg-red-600 transition-colors">
-                      <Trash2 size={14} />
-                    </motion.button>
-                  </div>
+        <div className="grid gap-6">
+          {projects.map((project: any) => (
+            <motion.div key={project.id} whileHover={{ y: -2 }} className="card-3d p-6 border border-steel-200">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-steel-900">{project.title}</h3>
+                  <p className="text-xs text-steel-400 uppercase tracking-wider">{project.category} • {project.media?.length || 0} files</p>
+                  {project.description && <p className="text-sm text-steel-600 mt-1">{project.description}</p>}
                 </div>
-              </motion.div>
-            );
-          })}
+                <motion.button whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                  onClick={() => handleDeleteProject(project.id, project.media || [])}
+                  className="size-9 bg-red-500/90 rounded-lg grid place-items-center text-white hover:bg-red-600 transition-colors flex-shrink-0">
+                  <Trash2 size={16} />
+                </motion.button>
+              </div>
+
+              {/* Media thumbnails in grid */}
+              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
+                {(project.media || []).map((item: any, idx: number) => {
+                  const isVideo = !!item.image_url.match(/\.(mp4|mov|webm|avi)$/i);
+                  return (
+                    <div key={item.id} className="relative group">
+                      {isVideo ? (
+                        <video src={item.image_url} className="w-full aspect-square object-cover rounded-lg" muted preload="metadata" />
+                      ) : (
+                        <img src={item.image_url} alt={`Media ${idx}`} className="w-full aspect-square object-cover rounded-lg" loading="lazy" />
+                      )}
+                      {isVideo && (
+                        <Play size={12} className="absolute top-1 left-1 text-white" fill="white" />
+                      )}
+                      <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                        onClick={() => handleDeleteMedia(item.id, item.storage_path)}
+                        className="absolute -top-2 -right-2 size-6 bg-red-500 rounded-full grid place-items-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X size={12} />
+                      </motion.button>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ))}
         </div>
       )}
     </div>

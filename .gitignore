@@ -21,6 +21,10 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Supabase
+.supabase
+.temp
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

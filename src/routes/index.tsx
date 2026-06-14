@@ -7,11 +7,11 @@ import { Reveal } from "@/components/site/Reveal";
 import { Counter } from "@/components/site/Counter";
 import { fetchServices, fetchSetting, fetchTestimonials, type HeroSettings, type StatsSettings } from "@/lib/cms";
 import { useI18n } from "@/lib/i18n";
-import heroImg from "@/assets/hero-welding.jpg";
+import heroImg from "@/assets/shop.png";
 
 const HERO_FALLBACK: HeroSettings = {
-  heading: "Precision Engineering. Quality Fabrication. Trusted Service.",
-  subheading: "Professional Welding, Fabrication, Agricultural Machinery Repair and Engineering Solutions.",
+  heading: "Sharanya's Welding Shop. Expert Craftsmanship. Trusted Expertise.",
+  subheading: "40+ Years of Professional Welding, Fabrication, Agricultural Machinery Repair and Engineering Excellence.",
 };
 const STATS_FALLBACK: StatsSettings = { projects: 2000, customers: 3000, years: 40, machines: 1000 };
 
@@ -67,7 +67,7 @@ function HomePage() {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-steel-900">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="Industrial welding" width={1920} height={1080} className="w-full h-full object-cover opacity-40" />
+          <img src={heroImg} alt="Sharanya's Welding Shop" width={1920} height={1080} className="w-full h-full object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-r from-steel-900 via-steel-900/80 to-steel-900/40" />
         </div>
 
@@ -95,7 +95,7 @@ function HomePage() {
                 transition={{ delay: 0.2, duration: 0.8 }}
                 className="block"
               >
-                {t("Precision")}
+                {t("Sharanya's")}
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, y: 30 }}
@@ -103,7 +103,7 @@ function HomePage() {
                 transition={{ delay: 0.4, duration: 0.8 }}
                 className="block text-spark"
               >
-                {t("Engineering.")}
+                {t("Welding Shop")}
               </motion.span>
             </h1>
 
